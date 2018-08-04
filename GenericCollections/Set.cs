@@ -1,36 +1,79 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace GenericCollections
+﻿namespace GenericCollections
 {
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    
+
+    /// <summary>
+    /// Set class.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of set objects.
+    /// </typeparam>
     public class Set<T> : ISet<T>
     {
-        public int Count { get; private set; }
-        public bool IsReadOnly => false;
+        #region Private Fields
 
+        /// <summary>
+        /// Comparer that compares two elements.
+        /// </summary>
+        private readonly IEqualityComparer<T> equalityComparer;
+
+        /// <summary>
+        /// Array of buckets.
+        /// </summary>
         private Node[] buckets;
 
+        /// <summary>
+        /// Amount of filled buckets.
+        /// </summary>
         private int amountOfFilledBuckets;
 
+        /// <summary>
+        /// Version of this set. For enumeration.
+        /// </summary>
         private int version;
 
-        private readonly IEqualityComparer<T> comparer;
-        
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Set{T}"/> class.
+        /// </summary>
+        /// <param name="defaultCapacity">
+        /// The default set's capacity.
+        /// </param>
         public Set(int defaultCapacity = 5)
         {
             this.buckets = new Node[defaultCapacity];
-            this.comparer = EqualityComparer<T>.Default;
+            this.equalityComparer = EqualityComparer<T>.Default;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Set{T}"/> class.
+        /// </summary>
+        /// <param name="comparer">
+        /// Comparer that tests set elements for equality.
+        /// </param>
+        /// <param name="defaultCapacity">
+        /// The default capacity.
+        /// </param>
         public Set(IEqualityComparer<T> comparer, int defaultCapacity = 5)
         {
-            this.comparer = comparer ?? throw new ArgumentNullException(nameof(comparer));
+            this.equalityComparer = comparer ?? throw new ArgumentNullException(nameof(comparer));
             this.buckets = new Node[defaultCapacity];
         }
-        
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Set{T}"/> class.
+        /// </summary>
+        /// <param name="collection">
+        /// Collection which elements will be added to this set.
+        /// </param>
+        /// <param name="defaultCapacity">
+        /// The default capacity.
+        /// </param>
         public Set(IEnumerable<T> collection, int defaultCapacity = 5)
         {
             if (collection == null)
@@ -45,7 +88,16 @@ namespace GenericCollections
                 this.Add(element);
             }
         }
-        
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Set{T}"/> class.
+        /// </summary>
+        /// <param name="collection">
+        /// Collection which elements will be added to this set.
+        /// </param>
+        /// <param name="comparer">
+        /// Comparer that tests set elements for equality.
+        /// </param>
         public Set(ICollection<T> collection, IEqualityComparer<T> comparer)
         {
             if (collection == null)
@@ -53,22 +105,49 @@ namespace GenericCollections
                 throw new ArgumentNullException(nameof(collection));
             }
             
-            this.comparer = comparer ?? throw new ArgumentNullException(nameof(comparer));
+            this.equalityComparer = comparer ?? throw new ArgumentNullException(nameof(comparer));
             
-            this.buckets = new Node[GetNextPrimeNumber(collection.Count)];
+            this.buckets = new Node[this.GetNextPrimeNumber(collection.Count)];
 
             foreach (var element in collection)
             {
                 this.Add(element);
             }
         }
-        
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Gets the amount of elements in this set.
+        /// </summary>
+        public int Count { get; private set; }
+
+        /// <summary>
+        /// Indicates if this collection is readonly.
+        /// </summary>
+        public bool IsReadOnly => false;
+
+        #endregion
+
+        #region Public Methods
+
+        /// <summary>
+        /// Gets this set's enumerator.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="IEnumerator"/>.
+        /// </returns>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown if set was changed during the enumeration.
+        /// </exception>
         public IEnumerator<T> GetEnumerator()
         {
             int startVersion = this.version;
-            for (int i = 0; i < this.buckets.Length; i++)
+            foreach (Node bucket in this.buckets)
             {
-                Node currentNode = buckets[i];
+                Node currentNode = bucket;
                 while (currentNode != null)
                 {
                     if (startVersion != this.version)
@@ -82,10 +161,27 @@ namespace GenericCollections
             }
         }
 
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        /// <summary>
+        /// Gets this set's enumerator.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="IEnumerator"/>.
+        /// </returns>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown if set was changed during the enumeration.
+        /// </exception>
+        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
-        private void UpdateVersion() => version++;
-
+        /// <summary>
+        /// Adds item to this set.
+        /// </summary>
+        /// <param name="item">
+        /// Item to add.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// True if item was added to set, false if not.
+        /// </returns>
         public bool Add(T item)
         {
             int hash = (item == null) ? 0 : item.GetHashCode();
@@ -97,11 +193,11 @@ namespace GenericCollections
             }
             else
             {
-                Node currentNode = buckets[bucketIndex];
-                Node parentNode = buckets[bucketIndex];
+                Node currentNode = this.buckets[bucketIndex];
+                Node parentNode  = this.buckets[bucketIndex];
                 while (currentNode != null)
                 {
-                    if (this.comparer.Equals(currentNode.Value, item))
+                    if (this.equalityComparer.Equals(currentNode.Value, item))
                     {
                         return false;
                     }
@@ -113,81 +209,30 @@ namespace GenericCollections
                 parentNode.Next = new Node(item);
             }
                            
-            UpdateVersion();
+            this.UpdateVersion();
             this.Count++;
             
             return true;
         }
 
-        private void CreateNewBucket(T item, int emptyBucketIndex)
-        {
-            this.buckets[emptyBucketIndex] = new Node(item);
-            this.amountOfFilledBuckets++;
-            if (this.AllBucketsAreFilled())
-            {
-                this.Resize();
-            }
-        }
-
-        private void Resize()
-        {
-            int newSize = GetNextPrimeNumber(this.Count);
-            var oldBuckets = this.buckets;
-            this.buckets = new Node[newSize];
-            
-            for (int i = 0; i < oldBuckets.Length; i++)
-            {
-                Node currentNode = oldBuckets[i];
-                while (currentNode != null)
-                {
-                    this.Add(currentNode.Value);
-                    currentNode = currentNode.Next;
-                }
-            }
-        }
-
-        private bool AllBucketsAreFilled() => this.amountOfFilledBuckets == this.buckets.Length;
-
-        private int GetNextPrimeNumber(int start)
-        {
-            int number = start;
-            while (true)
-            {
-                if (number % 6 == 1 || number % 6 == 5)
-                {
-                    if (IsPrime(number))
-                    {
-                        return number;
-                    }
-                }
-                
-                number++;
-            }
-        }
-
-        private bool IsPrime(int number)
-        {
-            if (number == 1)
-            {
-                return false;
-            }
-            
-            int sqrt = (int)Math.Sqrt(number);
-
-            for (int i = 2; i < sqrt; i++)
-            {
-                if (number % i == 0)
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-        
+        /// <summary>
+        /// Adds item to this set.
+        /// </summary>
+        /// <param name="item">
+        /// Item to add.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// True if item was added to set, false if not.
+        /// </returns>
         bool ISet<T>.Add(T item) => this.Add(item);
 
-
+        /// <summary>
+        /// Adds item to this set.
+        /// </summary>
+        /// <param name="item">
+        /// Item to add.
+        /// </param>
         void ICollection<T>.Add(T item) => this.Add(item);
 
         public void ExceptWith(IEnumerable<T> other)
@@ -245,6 +290,16 @@ namespace GenericCollections
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Checks if this set contains passed item.
+        /// </summary>
+        /// <param name="item">
+        /// The item.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// True if this set contains passed item, false otherwise.
+        /// </returns>
         public bool Contains(T item)
         {
             int hash = (item == null) ? 0 : item.GetHashCode();
@@ -253,7 +308,7 @@ namespace GenericCollections
             Node currentNode = this.buckets[bucketIndex];
             while (currentNode != null)
             {
-                if (this.comparer.Equals(currentNode.Value, item))
+                if (this.equalityComparer.Equals(currentNode.Value, item))
                 {
                     return true;
                 }
@@ -269,6 +324,16 @@ namespace GenericCollections
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Removes item from set.
+        /// </summary>
+        /// <param name="item">
+        /// Item to remove.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// True if item was removed, false otherwise.
+        /// </returns>
         public bool Remove(T item)
         {
             int hash = (item == null) ? 0 : item.GetHashCode();
@@ -276,16 +341,16 @@ namespace GenericCollections
 
             // TODO If this item is single item in bucket.
             
-            if (this.comparer.Equals(buckets[bucketIndex].Value, item))
+            if (this.equalityComparer.Equals(this.buckets[bucketIndex].Value, item))
             {
-                buckets[bucketIndex].Next = buckets[bucketIndex].Next.Next;
+                this.buckets[bucketIndex].Next = this.buckets[bucketIndex].Next.Next;
             }
             
             Node parentNode = this.buckets[bucketIndex];
             Node currentNode = this.buckets[bucketIndex];
             while (currentNode != null)
             {
-                if (this.comparer.Equals(currentNode.Value, item))
+                if (this.equalityComparer.Equals(currentNode.Value, item))
                 {
                     parentNode.Next = currentNode.Next;
                     return true;
@@ -298,14 +363,146 @@ namespace GenericCollections
             return false;
         }
 
+        #endregion
+
+        #region Private Methods
+
+        /// <summary>
+        /// Get least prime number that is greater than the passed number.
+        /// </summary>
+        /// <param name="start">
+        /// Start number.
+        /// </param>
+        /// <returns>
+        /// The <see cref="int"/>.
+        /// </returns>
+        private static int GetNextPrimeNumber(int start)
+        {
+            int number = start;
+            while (true)
+            {
+                if (number % 6 == 1 || number % 6 == 5)
+                {
+                    if (IsPrime(number))
+                    {
+                        return number;
+                    }
+                }
+
+                number++;
+            }
+        }
+
+        /// <summary>
+        /// Checks if given number is prime.
+        /// </summary>
+        /// <param name="number">
+        /// The number.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// True if passed number is prime, false otherwise.
+        /// </returns>
+        private static bool IsPrime(int number)
+        {
+            if (number == 1)
+            {
+                return false;
+            }
+
+            int sqrt = (int)Math.Sqrt(number);
+
+            for (int i = 2; i < sqrt; i++)
+            {
+                if (number % i == 0)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Updates this set's version.
+        /// </summary>
+        private void UpdateVersion() => this.version++;
+
+        /// <summary>
+        /// Creates new bucket if bucket ad <see cref="emptyBucketIndex"/> was null.
+        /// </summary>
+        /// <param name="item">
+        /// Item to add.
+        /// </param>
+        /// <param name="emptyBucketIndex">
+        /// The empty bucket index.
+        /// </param>
+        private void CreateNewBucket(T item, int emptyBucketIndex)
+        {
+            this.buckets[emptyBucketIndex] = new Node(item);
+            this.amountOfFilledBuckets++;
+            if (this.AllBucketsAreFilled())
+            {
+                this.Resize();
+            }
+        }
+
+        /// <summary>
+        /// Resize this set in a way that new capacity is least prime number
+        /// that is bigger than this set's amount of items.
+        /// </summary>
+        private void Resize()
+        {
+            int newSize = GetNextPrimeNumber(this.Count);
+            Node[] oldBuckets = this.buckets;
+            this.buckets = new Node[newSize];
+
+            foreach (Node bucket in oldBuckets)
+            {
+                Node currentNode = bucket;
+                while (currentNode != null)
+                {
+                    this.Add(currentNode.Value);
+                    currentNode = currentNode.Next;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Checks if all buckets are filled.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// True if all buckets are filled, false otherwise.
+        /// </returns>
+        private bool AllBucketsAreFilled() => this.amountOfFilledBuckets == this.buckets.Length;
+        
+        #endregion
+
+        /// <summary>
+        /// Class that represents node in bucket.
+        /// </summary>
         private class Node
         {
+            /// <summary>
+            /// Initializes a new instance of the <see cref="Node"/> class.
+            /// </summary>
+            /// <param name="value">
+            /// The value.
+            /// </param>
             public Node(T value)
             {
                 this.Value = value;
             }
-            
+
+            /// <summary>
+            /// Gets the value.
+            /// </summary>
             public T Value { get; }
+
+            /// <summary>
+            /// Gets or sets the next node.
+            /// </summary>
             public Node Next { get; set; }
         }
     }
