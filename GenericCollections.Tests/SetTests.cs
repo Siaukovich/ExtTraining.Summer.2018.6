@@ -1,6 +1,6 @@
 ﻿namespace GenericCollections.Tests
 {
-    using System.Collections.Generic;
+    using System;
     using System.Linq;
     using System.Reflection;
 
@@ -40,6 +40,15 @@
         }
 
         [Test]
+        public void Ctor_IEnumerableInitialization()
+        {
+            var data = Enumerable.Range(0, 100);
+            var set = new Set<int>(data);
+
+            CollectionAssert.AreEquivalent(set, data);
+        }
+
+        [Test]
         public void Ctor_CustomComparerWithICollectionInitialization()
         {
             var data = Enumerable.Range(-50, 100).ToArray();
@@ -47,7 +56,9 @@
 
             var set = new Set<int>(data, comparer);
 
-            CollectionAssert.AreEquivalent(set, data);
+            var expected = data.Where(v => v <= 0);
+
+            CollectionAssert.AreEquivalent(expected, set);
         }
 
         [Test]
