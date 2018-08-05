@@ -107,7 +107,7 @@
             
             this.equalityComparer = comparer ?? throw new ArgumentNullException(nameof(comparer));
             
-            this.buckets = new Node[this.GetNextPrimeNumber(collection.Count)];
+            this.buckets = new Node[GetNextPrimeNumber(collection.Count)];
 
             foreach (var element in collection)
             {
