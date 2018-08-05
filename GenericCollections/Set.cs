@@ -293,9 +293,42 @@
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Determines whether the current set and 
+        /// the specified collection contain the same elements.
+        /// </summary>
+        /// <param name="other">
+        /// The other.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if other was null.
+        /// </exception>
+        /// <remarks>
+        /// This method ignores the order of elements and any duplicate elements in other.
+        /// </remarks>
         public bool SetEquals(IEnumerable<T> other)
         {
-            throw new NotImplementedException();
+            if (other == null)
+            {
+                throw new ArgumentNullException(nameof(other));
+            }
+
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
+            var otherSet = new Set<T>(other.ToList());
+
+            if (otherSet.Count != this.Count)
+            {
+                return false;
+            }
+
+            return otherSet.All(this.Contains);
         }
 
         public void SymmetricExceptWith(IEnumerable<T> other)
