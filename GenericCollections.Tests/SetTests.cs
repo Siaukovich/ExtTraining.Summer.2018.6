@@ -207,5 +207,58 @@
             Assert.That(set.Count, Is.EqualTo(0));
             CollectionAssert.AreEquivalent(Enumerable.Empty<int>(), set);
         }
+
+        [Test]
+        public void SetEquals_EquivalentInput_ResultTrue()
+        {
+            var data = Enumerable.Range(0, 100).ToList();
+            var set = new Set<int>(data);
+
+            Assert.That(set.SetEquals(data), Is.EqualTo(true));
+        }
+
+        [Test]
+        public void SetEquals_NonequivalentInput_ResultTrue()
+        {
+            var data = Enumerable.Range(0, 100).ToList();
+            var set = new Set<int>(data);
+
+            data.AddRange(Enumerable.Range(0, 100));
+
+            Assert.That(set.SetEquals(data), Is.EqualTo(true));
+        }
+
+        [Test]
+        public void SetEquals_NonequivalentInput_ResultFalse()
+        {
+            var data = Enumerable.Range(0, 100).ToList();
+            var set = new Set<int>(data);
+
+            data.AddRange(Enumerable.Range(10, 100));
+
+            Assert.That(set.SetEquals(data), Is.EqualTo(false));
+        }
+
+        [Test]
+        public void SetEquals_PassedSelf_ResultTrue()
+        {
+            var data = Enumerable.Range(0, 100).ToList();
+            var set = new Set<int>(data);
+            Assert.That(set.SetEquals(set), Is.EqualTo(true));
+        }
+
+        [Test]
+        public void SetEquals_EmptySet_PassedEmpty_ResultTrue()
+        {
+            var set = new Set<int>();
+            Assert.That(set.SetEquals(Enumerable.Empty<int>()), Is.EqualTo(true));
+        }
+
+        [Test]
+        public void SetEquals_PassedNull_ThrowsArgumentNullExc()
+        {
+            var set = new Set<int>();
+            Assert.Throws<ArgumentNullException>(() => set.SetEquals(null));
+        }
     }
 }
