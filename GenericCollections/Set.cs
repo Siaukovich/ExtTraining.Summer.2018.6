@@ -3,6 +3,7 @@
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Linq;
 
     /// <summary>
     /// Set class.
@@ -112,6 +113,30 @@
             {
                 this.Add(element);
             }
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Set{T}"/> class.
+        /// </summary>
+        /// <param name="collection">
+        /// Collection which elements will be added to this set.
+        /// </param>
+        public Set(IEnumerable<T> collection) : this(collection.ToList())
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Set{T}"/> class.
+        /// </summary>
+        /// <param name="collection">
+        /// Collection which elements will be added to this set.
+        /// </param>
+        /// <param name="comparer">
+        /// Comparer that tests set elements for equality.
+        /// </param>
+        public Set(IEnumerable<T> collection, IEqualityComparer<T> comparer) :
+              this(collection.ToList(), comparer)
+        {
         }
 
         #endregion
