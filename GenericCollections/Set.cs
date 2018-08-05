@@ -71,17 +71,16 @@
         /// <param name="collection">
         /// Collection which elements will be added to this set.
         /// </param>
-        /// <param name="defaultCapacity">
-        /// The default capacity.
-        /// </param>
-        public Set(IEnumerable<T> collection, int defaultCapacity = 5)
+        public Set(ICollection<T> collection)
         {
             if (collection == null)
             {
                 throw new ArgumentNullException(nameof(collection));
             }
+
+            this.equalityComparer = EqualityComparer<T>.Default;
             
-            this.buckets = new Node[defaultCapacity];
+            this.buckets = new Node[GetNextPrimeNumber(collection.Count)];
 
             foreach (var element in collection)
             {
@@ -337,22 +336,29 @@
         public bool Remove(T item)
         {
             int hash = (item == null) ? 0 : item.GetHashCode();
-            int bucketIndex = hash % this.buckets.Length;
+            int bucketIndex = Math.Abs(hash % this.buckets.Length);
 
-            // TODO If this item is single item in bucket.
-            
-            if (this.equalityComparer.Equals(this.buckets[bucketIndex].Value, item))
-            {
-                this.buckets[bucketIndex].Next = this.buckets[bucketIndex].Next.Next;
-            }
-            
-            Node parentNode = this.buckets[bucketIndex];
             Node currentNode = this.buckets[bucketIndex];
+
+            if (currentNode == null)
+            {
+                return false;
+            }
+
+            if (this.equalityComparer.Equals(currentNode.Value, item))
+            {
+                ProcessValueInFirstNode();
+                this.Count--;
+                return true;
+            }
+
+            Node parentNode = this.buckets[bucketIndex];
             while (currentNode != null)
             {
                 if (this.equalityComparer.Equals(currentNode.Value, item))
                 {
                     parentNode.Next = currentNode.Next;
+                    this.Count--;
                     return true;
                 }
 
@@ -361,6 +367,19 @@
             }
 
             return false;
+
+            void ProcessValueInFirstNode()
+            {
+                if (currentNode.Next != null)
+                {
+                    this.buckets[bucketIndex].Next = this.buckets[bucketIndex].Next.Next;
+                }
+                else
+                {
+                    this.buckets[bucketIndex] = null;
+                    this.amountOfFilledBuckets--;
+                }
+            }
         }
 
         #endregion
