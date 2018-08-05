@@ -183,8 +183,7 @@
         /// </returns>
         public bool Add(T item)
         {
-            int hash = (item == null) ? 0 : item.GetHashCode();
-            int bucketIndex = hash % this.buckets.Length;
+            int bucketIndex = this.GetBucketIndex(item);
 
             if (this.buckets[bucketIndex] == null)
             {
@@ -193,7 +192,7 @@
             else
             {
                 Node currentNode = this.buckets[bucketIndex];
-                Node parentNode  = this.buckets[bucketIndex];
+                Node parentNode = this.buckets[bucketIndex];
                 while (currentNode != null)
                 {
                     if (this.equalityComparer.Equals(currentNode.Value, item))
@@ -204,14 +203,21 @@
                     parentNode = currentNode;
                     currentNode = currentNode.Next;
                 }
-                
+
                 parentNode.Next = new Node(item);
             }
-                           
+
             this.UpdateVersion();
             this.Count++;
-            
+
             return true;
+        }
+
+        private int GetBucketIndex(T item)
+        {
+            int hash = (item == null) ? 0 : item.GetHashCode();
+            int bucketIndex = Math.Abs(hash % this.buckets.Length);
+            return bucketIndex;
         }
 
         /// <summary>
@@ -312,8 +318,7 @@
         /// </returns>
         public bool Contains(T item)
         {
-            int hash = (item == null) ? 0 : item.GetHashCode();
-            int bucketIndex = hash % this.buckets.Length;
+            int bucketIndex = this.GetBucketIndex(item);
 
             Node currentNode = this.buckets[bucketIndex];
             while (currentNode != null)
@@ -346,8 +351,7 @@
         /// </returns>
         public bool Remove(T item)
         {
-            int hash = (item == null) ? 0 : item.GetHashCode();
-            int bucketIndex = Math.Abs(hash % this.buckets.Length);
+            int bucketIndex = this.GetBucketIndex(item);
 
             Node currentNode = this.buckets[bucketIndex];
 
