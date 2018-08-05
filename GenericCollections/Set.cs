@@ -213,13 +213,6 @@
             return true;
         }
 
-        private int GetBucketIndex(T item)
-        {
-            int hash = (item == null) ? 0 : item.GetHashCode();
-            int bucketIndex = Math.Abs(hash % this.buckets.Length);
-            return bucketIndex;
-        }
-
         /// <summary>
         /// Adds item to this set.
         /// </summary>
@@ -455,6 +448,22 @@
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Gets bucket index of passed object based on its hash.
+        /// </summary>
+        /// <param name="item">
+        /// The item.
+        /// </param>
+        /// <returns>
+        /// The <see cref="int"/>.
+        /// </returns>
+        private int GetBucketIndex(T item)
+        {
+            int hash = (item == null) ? 0 : item.GetHashCode();
+            int bucketIndex = Math.Abs(hash % this.buckets.Length);
+            return bucketIndex;
         }
 
         /// <summary>
