@@ -14,7 +14,7 @@
         {
             var set = new Set<int>();
 
-            Assert.That(set.Count, Is.EqualTo(0));
+            Assert.That(set.Count, Is.Zero);
             CollectionAssert.AreEquivalent(Enumerable.Empty<int>(), set);
         }
 
@@ -128,7 +128,7 @@
                 set.Add(i);
             }
             
-            Assert.That(set.Contains(data.First()), Is.EqualTo(true));
+            Assert.That(set.Contains(data.First()), Is.True);
         }
 
         [TestCase(1, ExpectedResult = false)]
@@ -164,7 +164,7 @@
         {
             var set = new Set<int>();
 
-            Assert.That(set.Remove(42), Is.EqualTo(false));
+            Assert.That(set.Remove(42), Is.False);
         }
 
         [Test]
@@ -181,7 +181,7 @@
                 }
             }
 
-            Assert.That(set.Count, Is.EqualTo(0));
+            Assert.That(set.Count, Is.Zero);
             CollectionAssert.AreEquivalent(Enumerable.Empty<int>(), set);
         }
 
@@ -193,7 +193,7 @@
 
             set.Clear();
 
-            Assert.That(set.Count, Is.EqualTo(0));
+            Assert.That(set.Count, Is.Zero);
             CollectionAssert.AreEquivalent(Enumerable.Empty<int>(), set);
         }
 
@@ -204,7 +204,7 @@
 
             set.Clear();
 
-            Assert.That(set.Count, Is.EqualTo(0));
+            Assert.That(set.Count, Is.Zero);
             CollectionAssert.AreEquivalent(Enumerable.Empty<int>(), set);
         }
 
@@ -214,7 +214,7 @@
             var data = Enumerable.Range(0, 100).ToList();
             var set = new Set<int>(data);
 
-            Assert.That(set.SetEquals(data), Is.EqualTo(true));
+            Assert.That(set.SetEquals(data), Is.True);
         }
 
         [Test]
@@ -225,7 +225,7 @@
 
             data.AddRange(Enumerable.Range(0, 100));
 
-            Assert.That(set.SetEquals(data), Is.EqualTo(true));
+            Assert.That(set.SetEquals(data), Is.True);
         }
 
         [Test]
@@ -236,7 +236,7 @@
 
             data.AddRange(Enumerable.Range(10, 100));
 
-            Assert.That(set.SetEquals(data), Is.EqualTo(false));
+            Assert.That(set.SetEquals(data), Is.False);
         }
 
         [Test]
@@ -244,14 +244,14 @@
         {
             var data = Enumerable.Range(0, 100).ToList();
             var set = new Set<int>(data);
-            Assert.That(set.SetEquals(set), Is.EqualTo(true));
+            Assert.That(set.SetEquals(set), Is.True);
         }
 
         [Test]
         public void SetEquals_EmptySet_PassedEmpty_ResultTrue()
         {
             var set = new Set<int>();
-            Assert.That(set.SetEquals(Enumerable.Empty<int>()), Is.EqualTo(true));
+            Assert.That(set.SetEquals(Enumerable.Empty<int>()), Is.True);
         }
 
         [Test]
