@@ -1,5 +1,6 @@
 ﻿namespace GenericCollections.Tests
 {
+    using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
 
@@ -8,6 +9,47 @@
     [TestFixture]
     public class SetTests
     {
+        [Test]
+        public void Ctor_NoParameters_EmptySet()
+        {
+            var set = new Set<int>();
+
+            Assert.That(set.Count, Is.EqualTo(0));
+            CollectionAssert.AreEquivalent(Enumerable.Empty<int>(), set);
+        }
+
+        [Test]
+        public void Ctor_CustomComparer()
+        {
+            var comparer = new AbsoluteValueEqualityComparer();
+            var set = new Set<int>(comparer);
+
+            set.Add(1);
+            set.Add(-1);
+            
+            Assert.That(set.Count, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void Ctor_ICollectionInitialization()
+        {
+            var data = Enumerable.Range(0, 100).ToArray();
+            var set = new Set<int>(data);
+
+            CollectionAssert.AreEquivalent(set, data);
+        }
+
+        [Test]
+        public void Ctor_CustomComparerWithICollectionInitialization()
+        {
+            var data = Enumerable.Range(-50, 100).ToArray();
+            var comparer = new AbsoluteValueEqualityComparer();
+
+            var set = new Set<int>(data, comparer);
+
+            CollectionAssert.AreEquivalent(set, data);
+        }
+
         [Test]
         public void Add_ValidInput_ValidResult()
         {
