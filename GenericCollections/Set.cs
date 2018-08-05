@@ -283,10 +283,21 @@
         {
             throw new NotImplementedException();
         }
-        
+
+        /// <summary>
+        /// Removes all elements from this set.
+        /// </summary>
         public void Clear()
         {
-            throw new NotImplementedException();
+            if (this.Count == 0)
+            {
+                return;
+            }
+
+            Array.Clear(this.buckets, 0, this.buckets.Length);
+            this.Count = 0;
+            this.amountOfFilledBuckets = 0;
+            this.UpdateVersion();
         }
 
         /// <summary>

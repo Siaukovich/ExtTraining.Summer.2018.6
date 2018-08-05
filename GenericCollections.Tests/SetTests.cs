@@ -131,5 +131,28 @@
             Assert.That(set.Count, Is.EqualTo(0));
             CollectionAssert.AreEquivalent(Enumerable.Empty<int>(), set);
         }
+
+        [Test]
+        public void Clear_CountIsZeroAndEnumerationResultsInEmptyCollection()
+        {
+            var data = Enumerable.Range(0, 100).ToArray();
+            var set = new Set<int>(data);
+
+            set.Clear();
+
+            Assert.That(set.Count, Is.EqualTo(0));
+            CollectionAssert.AreEquivalent(Enumerable.Empty<int>(), set);
+        }
+
+        [Test]
+        public void Clear_EmptySet_CountIsZeroAndEnumerationResultsInEmptyCollection()
+        {
+            var set = new Set<int>();
+
+            set.Clear();
+
+            Assert.That(set.Count, Is.EqualTo(0));
+            CollectionAssert.AreEquivalent(Enumerable.Empty<int>(), set);
+        }
     }
 }
