@@ -296,13 +296,58 @@
             var data2 = Enumerable.Range(50, 100);
 
             var set1 = new Set<int>(data1);
-            var set2 = new Set<int>(data2);
 
             var expected = data1.Intersect(data2);
 
-            set1.IntersectWith(set2);
+            set1.IntersectWith(data2);
 
             Assert.That(set1, Is.EquivalentTo(expected));
+        }
+
+        [Test]
+        public void CopyTo_NullArray_ThrowsArgumentNullExc()
+        {
+            var set = new Set<int>();
+            Assert.Throws<ArgumentNullException>(() => set.CopyTo(null, 0));
+        }
+
+        [Test]
+        public void CopyTo_ArrayIndexLessThanZero_ThrowsArgumentOutOfRangeExc()
+        {
+            var set = new Set<int>();
+            var array = new int[0];
+            Assert.Throws<ArgumentOutOfRangeException>(() => set.CopyTo(array, -1));
+        }
+
+        [Test]
+        public void CopyTo_ArrayIndexLessThanZero_ThrowsArgumentExc()
+        {
+            var set = new Set<int>(Enumerable.Range(0, 10));
+            var array = new int[5];
+            Assert.Throws<ArgumentException>(() => set.CopyTo(array, 0));
+        }
+
+        [Test]
+        public void CopyTo_EmptySet_ReturnsEmptyArray()
+        {
+            var set = new Set<int>();
+            var array = new int[0];
+
+            set.CopyTo(array, 0);
+
+            Assert.That(array, Is.Empty);
+        }
+
+        [Test]
+        public void CopyTo_ValidInput_ValidResult()
+        {
+            var data = Enumerable.Range(-50, 100);
+            var set = new Set<int>(data);
+            var array = new int[100];
+
+            set.CopyTo(array, 0);
+
+            Assert.That(array, Is.EquivalentTo(data));
         }
     }
 }
