@@ -361,9 +361,28 @@
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Modifies the current set so that it contains all 
+        /// elements that are present in the current set, 
+        /// in the specified collection, or in both.
+        /// </summary>
+        /// <param name="other">
+        /// The other.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if other was null.
+        /// </exception>
         public void UnionWith(IEnumerable<T> other)
         {
-            throw new NotImplementedException();
+            if (other == null)
+            {
+                throw new ArgumentNullException(nameof(other));
+            }
+
+            foreach (T element in other)
+            {
+                this.Add(element);
+            }
         }
 
         /// <summary>
