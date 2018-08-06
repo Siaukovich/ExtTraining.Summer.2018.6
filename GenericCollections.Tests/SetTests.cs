@@ -442,5 +442,49 @@
 
             Assert.That(set, Is.EquivalentTo(expected));
         }
+
+        [Test]
+        public void ExceptWith_PassedNull_ThrowsArgumentNullExc()
+        {
+            var set = new Set<int>();
+            Assert.Throws<ArgumentNullException>(() => set.ExceptWith(null));
+        }
+
+        [Test]
+        public void ExceptWith_PassedEmpty_ReturnsEquivalent()
+        {
+            var data = Enumerable.Range(0, 10);
+            var set = new Set<int>(data);
+
+            set.ExceptWith(Enumerable.Empty<int>());
+
+            Assert.That(set, Is.EquivalentTo(data));
+        }
+
+        [Test]
+        public void ExceptWith_EmptySet_ReturnsEmpty()
+        {
+            var data = Enumerable.Range(0, 10);
+            var set = new Set<int>();
+
+            set.ExceptWith(data);
+
+            Assert.That(set, Is.Empty);
+        }
+
+        [Test]
+        public void ExceptWith_ValidInput_ReturnsValidExcept()
+        {
+            var data1 = Enumerable.Range(0, 100);
+            var data2 = Enumerable.Range(50, 100);
+
+            var set = new Set<int>(data1);
+
+            var expected = data1.Except(data2);
+
+            set.ExceptWith(data2);
+
+            Assert.That(set, Is.EquivalentTo(expected));
+        }
     }
 }
