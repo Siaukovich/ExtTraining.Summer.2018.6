@@ -1,12 +1,17 @@
 ﻿namespace GenericCollections.Tests
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Reflection;
 
     using NUnit.Framework;
 
+    /// <summary>
+    /// The set tests.
+    /// </summary>
     [TestFixture]
+    [SuppressMessage("ReSharper", "StyleCop.SA1600", Justification = "No need for codestyle in tests.")]
     public class SetTests
     {
         [Test]
