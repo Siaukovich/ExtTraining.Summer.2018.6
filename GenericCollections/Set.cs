@@ -410,9 +410,48 @@
             return false;
         }
 
+        /// <summary>
+        /// Copies the elements of the <see cref="ICollection{T}"/> to an Array, 
+        /// starting at a particular Array index.
+        /// </summary>
+        /// <param name="array">
+        /// The array.
+        /// </param>
+        /// <param name="arrayIndex">
+        /// The array index.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if array was null.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// Thrown if arrayIndex is less than 0.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// The number of elements in the source <see cref="ICollection{T}"/> is greater 
+        /// than the available space from arrayIndex to the end of the destination array.
+        /// </exception>
         public void CopyTo(T[] array, int arrayIndex)
         {
-            throw new NotImplementedException();
+            if (array == null)
+            {
+                throw new ArgumentNullException(nameof(array), $"{nameof(array)} is null.");
+            }
+
+            if (arrayIndex < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(arrayIndex), $"{nameof(arrayIndex)} is less than 0.");
+            }
+
+            if (this.Count > array.Length - arrayIndex + 1)
+            {
+                throw new ArgumentException("Array have fewer elements than the collection.");
+            }
+
+            foreach (T element in this)
+            {
+                array[arrayIndex] = element;
+                arrayIndex++;
+            }
         }
 
         /// <summary>
