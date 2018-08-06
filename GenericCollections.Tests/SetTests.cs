@@ -429,7 +429,7 @@
         }
 
         [Test]
-        public void SymmetricExceptWith_ValidInput_ReturnsUnion()
+        public void SymmetricExceptWith_ValidInput_ReturnsValidSymmetricExcept()
         {
             var data1 = Enumerable.Range(0, 100);
             var data2 = Enumerable.Range(50, 100);
