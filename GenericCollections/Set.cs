@@ -263,9 +263,34 @@
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Modifies the current set so that it contains only elements that are also in a specified collection.
+        /// </summary>
+        /// <param name="other">
+        /// The other collection.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if other was null.
+        /// </exception>
         public void IntersectWith(IEnumerable<T> other)
         {
-            throw new NotImplementedException();
+            if (other == null)
+            {
+                throw new ArgumentNullException(nameof(other));
+            }
+
+            var otherSet = new Set<T>(other);
+            var thisSet = new Set<T>(this);
+
+            this.Clear();
+
+            foreach (T element in otherSet)
+            {
+                if (thisSet.Contains(element))
+                {
+                    this.Add(element);
+                }
+            }
         }
 
         public bool IsProperSubsetOf(IEnumerable<T> other)
