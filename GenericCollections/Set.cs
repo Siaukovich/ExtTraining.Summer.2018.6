@@ -330,9 +330,27 @@
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Determines whether the current set 
+        /// overlaps with the specified collection.
+        /// </summary>
+        /// <param name="other">
+        /// The other.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if other was null.
+        /// </exception>
         public bool Overlaps(IEnumerable<T> other)
         {
-            throw new NotImplementedException();
+            if (other == null)
+            {
+                throw new ArgumentNullException(nameof(other));
+            }
+
+            return other.Any(this.Contains);
         }
 
         /// <summary>
