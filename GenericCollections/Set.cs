@@ -258,9 +258,26 @@
         /// </param>
         void ICollection<T>.Add(T item) => this.Add(item);
 
+        /// <summary>
+        /// Removes all elements in the specified collection from the current set.
+        /// </summary>
+        /// <param name="other">
+        /// The other.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if other was null.
+        /// </exception>
         public void ExceptWith(IEnumerable<T> other)
         {
-            throw new NotImplementedException();
+            if (other == null)
+            {
+                throw new ArgumentNullException(nameof(other));
+            }
+
+            foreach (T element in other)
+            {
+                this.Remove(element);
+            }
         }
 
         /// <summary>
