@@ -260,5 +260,49 @@
             var set = new Set<int>();
             Assert.Throws<ArgumentNullException>(() => set.SetEquals(null));
         }
+
+        [Test]
+        public void IntersectWith_PassedNull_ThrowsArgumentNullExc()
+        {
+            var set = new Set<int>();
+            Assert.Throws<ArgumentNullException>(() => set.IntersectWith(null));
+        }
+
+        [Test]
+        public void IntersectWith_PassedSelf_ReturnsEquivalemtToSelf()
+        {
+            var set = new Set<int>();
+            var setCopy = new Set<int>(set);
+
+            set.IntersectWith(set);
+
+            Assert.That(set, Is.EquivalentTo(setCopy));
+        }
+
+        [Test]
+        public void IntersectWith_PassedEmpty_ReturnsEmpty()
+        {
+            var set = new Set<int>();
+
+            set.IntersectWith(Enumerable.Empty<int>());
+
+            Assert.That(set, Is.Empty);
+        }
+
+        [Test]
+        public void IntersectWith_PassedValid_ReturnsValid()
+        {
+            var data1 = Enumerable.Range(0, 100);
+            var data2 = Enumerable.Range(50, 100);
+
+            var set1 = new Set<int>(data1);
+            var set2 = new Set<int>(data2);
+
+            var expected = data1.Intersect(data2);
+
+            set1.IntersectWith(set2);
+
+            Assert.That(set1, Is.EquivalentTo(expected));
+        }
     }
 }
