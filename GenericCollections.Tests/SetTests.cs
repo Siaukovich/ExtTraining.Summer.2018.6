@@ -354,5 +354,49 @@
 
             Assert.That(array, Is.EquivalentTo(data));
         }
+
+        [Test]
+        public void UnionWith_PassedNull_ThrowsArgumentNullExc()
+        {
+            var set = new Set<int>();
+            Assert.Throws<ArgumentNullException>(() => set.UnionWith(null));
+        }
+
+        [Test]
+        public void UnionWith_PassedEmpty_ReturnsEquivalent()
+        {
+            var data = Enumerable.Range(0, 10);
+            var set = new Set<int>(data);
+            
+            set.UnionWith(Enumerable.Empty<int>());
+
+            Assert.That(set, Is.EquivalentTo(data));
+        }
+
+        [Test]
+        public void UnionWith_EmptySet_ReturnsEquivalent()
+        {
+            var data = Enumerable.Range(0, 10);
+            var set = new Set<int>();
+
+            set.UnionWith(data);
+
+            Assert.That(set, Is.EquivalentTo(data));
+        }
+
+        [Test]
+        public void UnionWith_ValidData_ReturnsValidUnion()
+        {
+            var data1 = Enumerable.Range(0, 100);
+            var data2 = Enumerable.Range(50, 100);
+
+            var set = new Set<int>(data1);
+
+            var expected = data1.Union(data2);
+
+            set.UnionWith(data2);
+
+            Assert.That(set, Is.EquivalentTo(expected));
+        }
     }
 }
