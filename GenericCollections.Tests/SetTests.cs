@@ -398,5 +398,49 @@
 
             Assert.That(set, Is.EquivalentTo(expected));
         }
+
+        [Test]
+        public void SymmetricExceptWith_PassedNull_ThrowsArgumentNullExc()
+        {
+            var set = new Set<int>();
+            Assert.Throws<ArgumentNullException>(() => set.SymmetricExceptWith(null));
+        }
+
+        [Test]
+        public void SymmetricExceptWith_PassedEmpty_ReturnsEquivalent()
+        {
+            var data = Enumerable.Range(0, 10);
+            var set = new Set<int>(data);
+
+            set.SymmetricExceptWith(Enumerable.Empty<int>());
+
+            Assert.That(set, Is.EquivalentTo(data));
+        }
+
+        [Test]
+        public void SymmetricExceptWith_EmptySet_ReturnsEquivalent()
+        {
+            var data = Enumerable.Range(0, 10);
+            var set = new Set<int>();
+
+            set.SymmetricExceptWith(data);
+
+            Assert.That(set, Is.EquivalentTo(data));
+        }
+
+        [Test]
+        public void SymmetricExceptWith_ValidInput_ReturnsUnion()
+        {
+            var data1 = Enumerable.Range(0, 100);
+            var data2 = Enumerable.Range(50, 100);
+
+            var set = new Set<int>(data1);
+
+            var expected = data1.Except(data2).Union(data2.Except(data1));
+
+            set.SymmetricExceptWith(data2);
+
+            Assert.That(set, Is.EquivalentTo(expected));
+        }
     }
 }
