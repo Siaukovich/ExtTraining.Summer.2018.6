@@ -486,5 +486,60 @@
 
             Assert.That(set, Is.EquivalentTo(expected));
         }
+
+        [Test]
+        public void Overlaps_PassedNull_ThrowsArgumentNullExc()
+        {
+            var set = new Set<int>();
+            Assert.Throws<ArgumentNullException>(() => set.Overlaps(null));
+        }
+
+        [Test]
+        public void Overlaps_PassedEmpty_ReturnsFalse()
+        {
+            var data = Enumerable.Range(0, 10);
+            var set = new Set<int>(data);
+
+            var result = set.Overlaps(Enumerable.Empty<int>());
+
+            Assert.That(result, Is.False);
+        }
+
+        [Test]
+        public void Overlaps_EmptySet_ReturnsFalse()
+        {
+            var data = Enumerable.Range(0, 10);
+            var set = new Set<int>();
+
+            var result = set.Overlaps(data);
+
+            Assert.That(result, Is.False);
+        }
+
+        [Test]
+        public void Overlaps_ValidInput_ReturnsTrue()
+        {
+            var data1 = Enumerable.Range(0, 100);
+            var data2 = Enumerable.Range(50, 100);
+
+            var set = new Set<int>(data1);
+
+            var result = set.Overlaps(data2);
+
+            Assert.That(result, Is.True);
+        }
+
+        [Test]
+        public void Overlaps_ValidInput_ReturnsFalse()
+        {
+            var data1 = Enumerable.Range(0, 100);
+            var data2 = Enumerable.Range(101, 100);
+
+            var set = new Set<int>(data1);
+
+            var result = set.Overlaps(data2);
+
+            Assert.That(result, Is.False);
+        }
     }
 }
