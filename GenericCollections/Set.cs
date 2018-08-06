@@ -356,9 +356,35 @@
             return otherSet.All(this.Contains);
         }
 
+        /// <summary>
+        /// Modifies the current set so that it contains 
+        /// only elements that are present either in the current set 
+        /// or in the specified collection, but not both.
+        /// </summary>
+        /// <param name="other">
+        /// The other.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if other was null.
+        /// </exception>
         public void SymmetricExceptWith(IEnumerable<T> other)
         {
-            throw new NotImplementedException();
+            if (other == null)
+            {
+                throw new ArgumentNullException(nameof(other));
+            }
+
+            foreach (T element in other)
+            {
+                if (this.Contains(element))
+                {
+                    this.Remove(element);
+                }
+                else
+                {
+                    this.Add(element);
+                }
+            }
         }
 
         /// <summary>
