@@ -356,6 +356,54 @@
         }
 
         [Test]
+        public void StaticUnion_PassedNull_ThrowsArgumentNullExc()
+        {
+            var set = new Set<int>();
+            Assert.Throws<ArgumentNullException>(() => Set<int>.Union(set, null));
+            Assert.Throws<ArgumentNullException>(() => Set<int>.Union(null, set));
+        }
+
+        [Test]
+        public void StaticUnion_PassedEmpty_ReturnsEquivalent()
+        {
+            var data = Enumerable.Range(0, 10);
+            var set1 = new Set<int>(data);
+            var set2 = new Set<int>();
+
+            var unionSet = Set<int>.Union(set1, set2);
+
+            Assert.That(unionSet, Is.EquivalentTo(data));
+        }
+
+        [Test]
+        public void StaticUnion_EmptySet_ReturnsEquivalent()
+        {
+            var data = Enumerable.Range(0, 10);
+            var set1 = new Set<int>();
+            var set2 = new Set<int>(data);
+
+            var unionSet = Set<int>.Union(set1, set2);
+
+            Assert.That(unionSet, Is.EquivalentTo(data));
+        }
+
+        [Test]
+        public void StaticUnion_ValidData_ReturnsValidUnion()
+        {
+            var data1 = Enumerable.Range(0, 100);
+            var data2 = Enumerable.Range(50, 100);
+
+            var set1 = new Set<int>(data1);
+            var set2 = new Set<int>(data2);
+
+            var unionSet = Set<int>.Union(set1, set2);
+
+            var expected = set1.Union(set2); // Linq.
+
+            Assert.That(unionSet, Is.EquivalentTo(expected));
+        }
+
+        [Test]
         public void UnionWith_PassedNull_ThrowsArgumentNullExc()
         {
             var set = new Set<int>();
@@ -367,7 +415,7 @@
         {
             var data = Enumerable.Range(0, 10);
             var set = new Set<int>(data);
-            
+
             set.UnionWith(Enumerable.Empty<int>());
 
             Assert.That(set, Is.EquivalentTo(data));
@@ -485,6 +533,56 @@
             set.ExceptWith(data2);
 
             Assert.That(set, Is.EquivalentTo(expected));
+        }
+
+        [Test]
+        public void StaticExcept_PassedNull_ThrowsArgumentNullExc()
+        {
+            var set = new Set<int>();
+            Assert.Throws<ArgumentNullException>(() => Set<int>.Except(set, null));
+            Assert.Throws<ArgumentNullException>(() => Set<int>.Except(null, set));
+        }
+
+        [Test]
+        public void StaticExcept_PassedEmpty_ReturnsEquivalent()
+        {
+            var data = Enumerable.Range(0, 10);
+
+            var set1 = new Set<int>(data);
+            var set2 = new Set<int>();
+
+            var exceptSet = Set<int>.Except(set1, set2);
+
+            Assert.That(exceptSet, Is.EquivalentTo(data));
+        }
+
+        [Test]
+        public void StaticExcept_EmptySet_ReturnsEmpty()
+        {
+            var data = Enumerable.Range(0, 10);
+
+            var set1 = new Set<int>();
+            var set2 = new Set<int>(data);
+
+            var exceptSet = Set<int>.Except(set1, set2);
+
+            Assert.That(exceptSet, Is.Empty);
+        }
+
+        [Test]
+        public void StaticExcept_ValidInput_ReturnsValidExcept()
+        {
+            var data1 = Enumerable.Range(0, 100);
+            var data2 = Enumerable.Range(50, 100);
+
+            var set1 = new Set<int>(data1);
+            var set2 = new Set<int>(data2);
+
+            var expected = data1.Except(data2);
+
+            var exceptSet = Set<int>.Except(set1, set2);
+
+            Assert.That(exceptSet, Is.EquivalentTo(expected));
         }
 
         [Test]
