@@ -158,6 +158,105 @@
         #region Public Methods
 
         /// <summary>
+        /// Creates a new Set that is a union of two passed sets.
+        /// </summary>
+        /// <param name="lhs">
+        /// The lhs.
+        /// </param>
+        /// <param name="rhs">
+        /// The rhs.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Set{T}"/>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if one of the arguments was null.
+        /// </exception>
+        public static Set<T> Union(Set<T> lhs, Set<T> rhs)
+        {
+            if (lhs == null)
+            {
+                throw new ArgumentNullException(nameof(lhs));
+            }
+
+            if (rhs == null)
+            {
+                throw new ArgumentNullException(nameof(rhs));
+            }
+
+            var unionSet = new Set<T>(lhs);
+            unionSet.UnionWith(rhs);
+
+            return unionSet;
+        }
+
+        /// <summary>
+        /// Creates a new Set that is an except of two passed sets.
+        /// </summary>
+        /// <param name="lhs">
+        /// The lhs.
+        /// </param>
+        /// <param name="rhs">
+        /// The rhs.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Set{T}"/>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if one of the arguments was null.
+        /// </exception>
+        public static Set<T> Except(Set<T> lhs, Set<T> rhs)
+        {
+            if (lhs == null)
+            {
+                throw new ArgumentNullException(nameof(lhs));
+            }
+
+            if (rhs == null)
+            {
+                throw new ArgumentNullException(nameof(rhs));
+            }
+
+            var exceptSet = new Set<T>(lhs);
+            exceptSet.ExceptWith(rhs);
+
+            return exceptSet;
+        }
+
+        /// <summary>
+        /// Creates a new Set that is a symmetric except of two passed sets.
+        /// </summary>
+        /// <param name="lhs">
+        /// The lhs.
+        /// </param>
+        /// <param name="rhs">
+        /// The rhs.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Set{T}"/>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if one of the arguments was null.
+        /// </exception>
+        public static Set<T> SymmetricExcept(Set<T> lhs, Set<T> rhs)
+        {
+            if (lhs == null)
+            {
+                throw new ArgumentNullException(nameof(lhs));
+            }
+
+            if (rhs == null)
+            {
+                throw new ArgumentNullException(nameof(rhs));
+            }
+
+            var exceptSet = new Set<T>(lhs);
+            exceptSet.SymmetricExceptWith(rhs);
+
+            return exceptSet;
+        }
+
+        /// <summary>
         /// Gets this set's enumerator.
         /// </summary>
         /// <returns>
@@ -389,17 +488,17 @@
                 throw new ArgumentNullException(nameof(other));
             }
 
-            if (this.Count == 0)
-            {
-                return true;
-            }
-
             if (ReferenceEquals(this, other))
             {
                 return true;
             }
-            
+
             var otherSet = new Set<T>(other);
+
+            if (this.Count > otherSet.Count)
+            {
+                return false;
+            }
 
             return this.All(otherSet.Contains);
         }
@@ -796,9 +895,10 @@
         /// </summary>
         private void Resize()
         {
-            int newSize = GetNextPrimeNumber(this.Count);
+            int newSize = GetNextPrimeNumber(this.Count + 1);
             Node[] oldBuckets = this.buckets;
             this.buckets = new Node[newSize];
+            this.amountOfFilledBuckets = 0;
 
             foreach (Node bucket in oldBuckets)
             {
