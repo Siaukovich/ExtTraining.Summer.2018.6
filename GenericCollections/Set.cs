@@ -320,14 +320,62 @@
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Determines whether a set is a subset of a specified collection.
+        /// </summary>
+        /// <param name="other">
+        /// The other.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if other was null.
+        /// </exception>
         public bool IsSubsetOf(IEnumerable<T> other)
         {
-            throw new NotImplementedException();
+            if (other == null)
+            {
+                throw new ArgumentNullException(nameof(other));
+            }
+
+            if (this.Count == 0)
+            {
+                return true;
+            }
+
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+            
+            var otherSet = new Set<T>(other);
+
+            return this.All(otherSet.Contains);
         }
 
+        /// <summary>
+        /// Determines whether the current set is a superset of a specified collection.
+        /// </summary>
+        /// <param name="other">
+        /// The other.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if other was null.
+        /// </exception>
         public bool IsSupersetOf(IEnumerable<T> other)
         {
-            throw new NotImplementedException();
+            if (other == null)
+            {
+                throw new ArgumentNullException(nameof(other));
+            }
+
+            var otherSet = new Set<T>(other);
+
+            return otherSet.IsSubsetOf(this);
         }
 
         /// <summary>
