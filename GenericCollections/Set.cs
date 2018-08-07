@@ -310,14 +310,64 @@
             }
         }
 
+        /// <summary>
+        /// Determines whether the current set is a proper 
+        /// (strict) subset of a specified collection.
+        /// </summary>
+        /// <param name="other">
+        /// The other.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if other was null.
+        /// </exception>
         public bool IsProperSubsetOf(IEnumerable<T> other)
         {
-            throw new NotImplementedException();
+            if (other == null)
+            {
+                throw new ArgumentNullException(nameof(other));
+            }
+
+            if (ReferenceEquals(this, other))
+            {
+                return false;
+            }
+
+            var otherSet = new Set<T>(other);
+
+            if (otherSet.Count <= this.Count)
+            {
+                return false;
+            }
+
+            return this.All(otherSet.Contains);
         }
 
+        /// <summary>
+        /// Determines whether the current set is a proper 
+        /// (strict) superset of a specified collection.
+        /// </summary>
+        /// <param name="other">
+        /// The other.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if other was null.
+        /// </exception>
         public bool IsProperSupersetOf(IEnumerable<T> other)
         {
-            throw new NotImplementedException();
+            if (other == null)
+            {
+                throw new ArgumentNullException(nameof(other));
+            }
+
+            var otherSet = new Set<T>(other);
+
+            return otherSet.IsProperSubsetOf(this);
         }
 
         /// <summary>
