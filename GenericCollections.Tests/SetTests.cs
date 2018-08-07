@@ -136,6 +136,22 @@
             Assert.That(set.Contains(data.First()), Is.True);
         }
 
+        [Test]
+        public void Enumeration_CollectionChangedDuringEnumeration_ThrowsInvalidOperationExc()
+        {
+            var data = Enumerable.Range(0, 10);
+            var set = new Set<int>(data);
+
+            Assert.Throws<InvalidOperationException>(
+                () =>
+                    {
+                        foreach (int element in set)
+                        {
+                            set.Add(11);
+                        }
+                    });
+        }
+
         [TestCase(1, ExpectedResult = false)]
         [TestCase(2, ExpectedResult = true)]
         [TestCase(3, ExpectedResult = true)]
