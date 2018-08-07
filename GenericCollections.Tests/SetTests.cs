@@ -542,6 +542,98 @@
             Assert.That(result, Is.False);
         }
 
+        [Test]
+        public void IsSubsetOf_EquivalentSets_ReturnsFalse()
+        {
+            var data1 = Enumerable.Range(0, 100);
+            var data2 = Enumerable.Range(0, 100);
+
+            var set = new Set<int>(data1);
+
+            var result = set.IsProperSubsetOf(data2);
+
+            Assert.That(result, Is.False);
+        }
+
+        [Test]
+        public void IsSupersetOf_PassedNull_ThrowsArgumentNullExc()
+        {
+            var set = new Set<int>();
+            Assert.Throws<ArgumentNullException>(() => set.IsSupersetOf(null));
+        }
+
+        [Test]
+        public void IsSupersetOf_EmptySetPassedEmpty_ReturnsTrue()
+        {
+            var set = new Set<int>();
+
+            var result = set.IsSupersetOf(Enumerable.Empty<int>());
+
+            Assert.That(result, Is.True);
+        }
+
+        [Test]
+        public void IsSupersetOf_EmptySetPassedNonempty_ReturnsFalse()
+        {
+            var data = Enumerable.Range(0, 10);
+            var set = new Set<int>();
+
+            var result = set.IsSupersetOf(data);
+
+            Assert.That(result, Is.False);
+        }
+
+        [Test]
+        public void IsSupersetOf_NonemptySetPassedEmpty_ReturnsTrue()
+        {
+            var data = Enumerable.Range(0, 10);
+            var set = new Set<int>(data);
+
+            var result = set.IsSupersetOf(Enumerable.Empty<int>());
+
+            Assert.That(result, Is.True);
+        }
+
+
+        [Test]
+        public void IsSupersetOf_ValidInput_ReturnsTrue()
+        {
+            var data1 = Enumerable.Range(-30, 100); 
+            var data2 = Enumerable.Range(0, 50);
+
+            var set = new Set<int>(data1);
+
+            var result = set.IsSupersetOf(data2);
+
+            Assert.That(result, Is.True);
+        }
+
+        [Test]
+        public void IsSupersetOf_PassedSelf_ReturnsTrue()
+        {
+            var data1 = Enumerable.Range(0, 50);
+
+            var set = new Set<int>(data1);
+
+            var result = set.IsSubsetOf(set);
+
+            Assert.That(result, Is.True);
+        }
+
+        [Test]
+        public void IsSupersetOf_ValidInput_ReturnsFalse()
+        {
+            var data1 = Enumerable.Range(0, 100);
+            var data2 = Enumerable.Range(1, 100);
+
+            var set = new Set<int>(data1);
+
+            var result = set.IsSubsetOf(data2);
+
+            Assert.That(result, Is.False);
+        }
+    
+        [Test]
         public void IsSubsetOf_PassedNull_ThrowsArgumentNullExc()
         {
             var set = new Set<int>();
@@ -619,35 +711,101 @@
             Assert.That(result, Is.False);
         }
 
-        public void IsSupersetOf_PassedNull_ThrowsArgumentNullExc()
+        [Test]
+        public void IsProperSubsetOf_PassedNull_ThrowsArgumentNullExc()
         {
             var set = new Set<int>();
-            Assert.Throws<ArgumentNullException>(() => set.IsSupersetOf(null));
+            Assert.Throws<ArgumentNullException>(() => set.IsProperSubsetOf(null));
         }
 
         [Test]
-        public void IsSupersetOf_EmptySetPassedEmpty_ReturnsTrue()
+        public void IsProperSubsetOf_EmptySetPassedEmpty_ReturnsFalse()
         {
             var set = new Set<int>();
 
-            var result = set.IsSupersetOf(Enumerable.Empty<int>());
-
-            Assert.That(result, Is.True);
-        }
-
-        [Test]
-        public void IsSupersetOf_EmptySetPassedNonempty_ReturnsFalse()
-        {
-            var data = Enumerable.Range(0, 10);
-            var set = new Set<int>();
-
-            var result = set.IsSupersetOf(data);
+            var result = set.IsProperSubsetOf(Enumerable.Empty<int>());
 
             Assert.That(result, Is.False);
         }
 
         [Test]
-        public void IsSupersetOf_NonemptySetPassedEmpty_ReturnsTrue()
+        public void IsProperSubsetOf_EmptySetPassedNonempty_ReturnsTrue()
+        {
+            var data = Enumerable.Range(0, 10);
+            var set = new Set<int>();
+
+            var result = set.IsProperSubsetOf(data);
+
+            Assert.That(result, Is.True);
+        }
+
+        [Test]
+        public void IsProperSubsetOf_NonemptySetPassedEmpty_ReturnsFalse()
+        {
+            var data = Enumerable.Range(0, 10);
+            var set = new Set<int>(data);
+
+            var result = set.IsProperSubsetOf(Enumerable.Empty<int>());
+
+            Assert.That(result, Is.False);
+        }
+
+
+        [Test]
+        public void IsProperSubsetOf_ValidInput_ReturnsTrue()
+        {
+            var data1 = Enumerable.Range(0, 50);
+            var data2 = Enumerable.Range(-30, 100);
+
+            var set = new Set<int>(data1);
+
+            var result = set.IsProperSubsetOf(data2);
+
+            Assert.That(result, Is.True);
+        }
+
+        [Test]
+        public void IsProperSubsetOf_PassedSelf_ReturnsFalse()
+        {
+            var data1 = Enumerable.Range(0, 50);
+
+            var set = new Set<int>(data1);
+
+            var result = set.IsProperSubsetOf(set);
+
+            Assert.That(result, Is.False);
+        }
+
+        [Test]
+        public void IsProperSupersetOf_PassedNull_ThrowsArgumentNullExc()
+        {
+            var set = new Set<int>();
+            Assert.Throws<ArgumentNullException>(() => set.IsProperSupersetOf(null));
+        }
+
+        [Test]
+        public void IsProperSupersetOf_EmptySetPassedEmpty_ReturnsFalse()
+        {
+            var set = new Set<int>();
+
+            var result = set.IsProperSupersetOf(Enumerable.Empty<int>());
+
+            Assert.That(result, Is.False);
+        }
+
+        [Test]
+        public void IsProperSupersetOf_EmptySetPassedNonempty_ReturnsFalse()
+        {
+            var data = Enumerable.Range(0, 10);
+            var set = new Set<int>();
+
+            var result = set.IsProperSupersetOf(data);
+
+            Assert.That(result, Is.False);
+        }
+
+        [Test]
+        public void IsProperSupersetOf_NonemptySetPassedEmpty_ReturnsTrue()
         {
             var data = Enumerable.Range(0, 10);
             var set = new Set<int>(data);
@@ -659,39 +817,39 @@
 
 
         [Test]
-        public void IsSupersetOf_ValidInput_ReturnsTrue()
+        public void IsProperSupersetOf_ValidInput_ReturnsTrue()
         {
-            var data1 = Enumerable.Range(-30, 100); 
+            var data1 = Enumerable.Range(-30, 100);
             var data2 = Enumerable.Range(0, 50);
 
             var set = new Set<int>(data1);
 
-            var result = set.IsSupersetOf(data2);
+            var result = set.IsProperSupersetOf(data2);
 
             Assert.That(result, Is.True);
         }
 
         [Test]
-        public void IsSupersetOf_PassedSelf_ReturnsTrue()
+        public void IsSupersetOf_PassedSelf_ReturnsFalse()
         {
             var data1 = Enumerable.Range(0, 50);
 
             var set = new Set<int>(data1);
 
-            var result = set.IsSubsetOf(set);
+            var result = set.IsProperSupersetOf(set);
 
-            Assert.That(result, Is.True);
+            Assert.That(result, Is.False);
         }
 
         [Test]
-        public void IsSupersetOf_ValidInput_ReturnsFalse()
+        public void IsProperSupersetOf_ValidInput_ReturnsFalse()
         {
             var data1 = Enumerable.Range(0, 100);
-            var data2 = Enumerable.Range(1, 100);
+            var data2 = Enumerable.Range(0, 100);
 
             var set = new Set<int>(data1);
 
-            var result = set.IsSubsetOf(data2);
+            var result = set.IsProperSupersetOf(data2);
 
             Assert.That(result, Is.False);
         }
